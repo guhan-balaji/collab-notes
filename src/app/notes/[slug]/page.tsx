@@ -1,4 +1,4 @@
-import Note from "@/app/lib/ui/Note";
+import Note from "@/app/ui/notes/Note";
 
 export default function Page({ params }: { params: { slug: string } }) {
   return (
