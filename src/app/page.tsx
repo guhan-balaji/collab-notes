@@ -5,18 +5,18 @@ export default function Home() {
   return (
     <main>
       <h1>
-        Welcome to the <strong>collab-note-taking</strong> app!
+        Welcome to the <strong>collab-notes</strong> app!
       </h1>
       <dl>
         <dt>
-          <em>collab-note-taking</em>
+          <em>collab-notes</em>
         </dt>
         <dd>
           <ul>
             <li>
-              collab-note-taking is a simple app that allows users to create and
-              edit notes along with other users. The <em>owner</em> of a
-              particular note can share it with any number of
+              collab-notes is a simple app that allows users to create and edit
+              notes along with other users. The <em>owner</em> of a particular
+              note can share it with any number of
               <em>collaborators</em> of their choosing.
             </li>
             <li>

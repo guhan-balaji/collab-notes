@@ -5,9 +5,9 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "collab-note-taking",
+  title: "collab-notes",
   description:
-    "A simple note taking app that allows users to take collabotrative notes.",
+    "A simple note taking app that allows users to take collaborate on notes online.",
 };
 
 export default function RootLayout({
