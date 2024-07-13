@@ -1,13 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { createEditor } from "slate";
-import { Slate, Editable, withReact } from "slate-react";
-import { BaseEditor, Descendant } from "slate";
+import { Slate, Editable, withReact, RenderElementProps } from "slate-react";
+import { BaseEditor, Descendant, Editor, Transforms, Element } from "slate";
 import { ReactEditor } from "slate-react";
-
-type CustomElement = { type: "paragraph"; children: CustomText[] };
-type CustomText = { text: string };
+import DefaultElement, { CodeElement } from "./CustomElement";
+import { CustomElement, CustomText, ElementType } from "@/app/lib/types.ui";
 
 declare module "slate" {
   interface CustomTypes {
@@ -19,24 +18,40 @@ declare module "slate" {
 
 const initialValue: Descendant[] = [
   {
-    type: "paragraph",
+    type: ElementType.paragraph,
     children: [{ text: "A line of text in a paragraph." }],
   },
 ];
 
 export default function Note() {
   const [editor] = useState(() => withReact(createEditor()));
+  const renderElement = useCallback((props: RenderElementProps) => {
+    switch (props.element.type) {
+      case "code":
+        return <CodeElement {...props} />;
+      default:
+        return <DefaultElement {...props} />;
+    }
+  }, []);
 
   function handleOnKeyDown(e: React.KeyboardEvent): void {
-    if (e.key === "&") {
+    if (e.key === "`" && e.ctrlKey) {
       e.preventDefault();
-      editor.insertText("and");
+      const [match] = Editor.nodes(editor, {
+        match: (n) => Element.isElement(n) && n.type === ElementType.code,
+      });
+
+      Transforms.setNodes(
+        editor,
+        { type: match ? ElementType.paragraph : ElementType.code },
+        { match: (n) => Element.isElement(n) && Editor.isBlock(editor, n) }
+      );
     }
   }
 
   return (
     <Slate editor={editor} initialValue={initialValue}>
-      <Editable onKeyDown={handleOnKeyDown} />
+      <Editable renderElement={renderElement} onKeyDown={handleOnKeyDown} />
     </Slate>
   );
 }
