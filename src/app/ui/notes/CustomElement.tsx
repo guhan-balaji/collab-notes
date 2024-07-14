@@ -1,25 +1,26 @@
-export default function DefaultElement({
-  attributes,
-  children,
-}: Readonly<{
-  attributes: React.HTMLAttributes<HTMLParagraphElement>;
-  children: React.ReactNode;
-}>) {
-  return <p {...attributes}>{children}</p>;
+import { RenderElementProps, RenderLeafProps } from "slate-react";
+
+export default function DefaultElement(props: RenderElementProps) {
+  return <p {...props.attributes}>{props.children}</p>;
 }
 
-export function CodeElement({
-  attributes,
-  children,
-}: Readonly<{
-  attributes: React.HTMLAttributes<HTMLPreElement>;
-  children: React.ReactNode;
-}>) {
+export function CodeElement(props: RenderElementProps) {
   return (
     <>
-      <pre {...attributes}>
-        <code>{children}</code>
+      <pre {...props.attributes}>
+        <code>{props.children}</code>
       </pre>
     </>
+  );
+}
+
+export function Leaf(props: RenderLeafProps) {
+  return (
+    <span
+      {...props.attributes}
+      style={{ fontWeight: props.leaf.bold ? "bold" : "normal" }}
+    >
+      {props.children}
+    </span>
   );
 }

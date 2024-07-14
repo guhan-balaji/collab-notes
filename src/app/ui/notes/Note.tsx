@@ -2,11 +2,18 @@
 
 import { useCallback, useState } from "react";
 import { createEditor } from "slate";
-import { Slate, Editable, withReact, RenderElementProps } from "slate-react";
-import { BaseEditor, Descendant, Editor, Transforms, Element } from "slate";
+import {
+  Slate,
+  Editable,
+  withReact,
+  RenderElementProps,
+  RenderLeafProps,
+} from "slate-react";
+import { BaseEditor, Descendant } from "slate";
 import { ReactEditor } from "slate-react";
-import DefaultElement, { CodeElement } from "./CustomElement";
+import DefaultElement, { CodeElement, Leaf } from "./CustomElement";
 import { CustomElement, CustomText, ElementType } from "@/app/lib/types.ui";
+import { formatText } from "@/app/lib/notes/helper";
 
 declare module "slate" {
   interface CustomTypes {
@@ -25,33 +32,36 @@ const initialValue: Descendant[] = [
 
 export default function Note() {
   const [editor] = useState(() => withReact(createEditor()));
+
+  const renderLeaf = useCallback((props: RenderLeafProps) => {
+    return <Leaf {...props} />;
+  }, []);
   const renderElement = useCallback((props: RenderElementProps) => {
-    switch (props.element.type) {
-      case "code":
+    const et: ElementType = props.element.type;
+    switch (et) {
+      case ElementType.code:
         return <CodeElement {...props} />;
-      default:
+      case ElementType.paragraph:
         return <DefaultElement {...props} />;
+      default:
+        const _exhaustiveCheck: never = et;
+        throw new Error(
+          `Unexpected type: ${_exhaustiveCheck} is not of type ElementType.`
+        );
     }
   }, []);
 
   function handleOnKeyDown(e: React.KeyboardEvent): void {
-    if (e.key === "`" && e.ctrlKey) {
-      e.preventDefault();
-      const [match] = Editor.nodes(editor, {
-        match: (n) => Element.isElement(n) && n.type === ElementType.code,
-      });
-
-      Transforms.setNodes(
-        editor,
-        { type: match ? ElementType.paragraph : ElementType.code },
-        { match: (n) => Element.isElement(n) && Editor.isBlock(editor, n) }
-      );
-    }
+    formatText(e, editor);
   }
 
   return (
     <Slate editor={editor} initialValue={initialValue}>
-      <Editable renderElement={renderElement} onKeyDown={handleOnKeyDown} />
+      <Editable
+        renderElement={renderElement}
+        renderLeaf={renderLeaf}
+        onKeyDown={handleOnKeyDown}
+      />
     </Slate>
   );
 }

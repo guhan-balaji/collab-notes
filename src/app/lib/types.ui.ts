@@ -12,17 +12,17 @@ export enum ElementType {
   code = "code",
 }
 
-type BaseElement = {
+interface BaseElement {
   type: ElementType;
   children: CustomText[];
-};
+}
 
-export type ParagraphElement = BaseElement & {
+export interface ParagraphElement extends BaseElement {
   type: ElementType.paragraph;
-};
+}
 
-export type CodeElement = BaseElement & {
+export interface CodeElement extends BaseElement {
   type: ElementType.code;
-};
+}
 
 export type CustomElement = ParagraphElement | CodeElement;
