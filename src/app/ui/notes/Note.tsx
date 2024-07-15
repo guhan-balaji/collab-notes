@@ -9,15 +9,19 @@ import {
   RenderElementProps,
   RenderLeafProps,
 } from "slate-react";
-import { BaseEditor, Descendant } from "slate";
-import { ReactEditor } from "slate-react";
+import { Descendant } from "slate";
 import DefaultElement, { CodeElement, Leaf } from "./CustomElement";
-import { CustomElement, CustomText, ElementType } from "@/app/lib/types.ui";
-import { formatText } from "@/app/lib/notes/helper";
+import {
+  CustomElement,
+  CustomText,
+  EditorType,
+  ElementType,
+} from "@/app/lib/types.ui";
+import { handleOnKeyDown } from "@/app/lib/notes/note";
 
 declare module "slate" {
   interface CustomTypes {
-    Editor: BaseEditor & ReactEditor;
+    Editor: EditorType;
     Element: CustomElement;
     Text: CustomText;
   }
@@ -51,16 +55,12 @@ export default function Note() {
     }
   }, []);
 
-  function handleOnKeyDown(e: React.KeyboardEvent): void {
-    formatText(e, editor);
-  }
-
   return (
     <Slate editor={editor} initialValue={initialValue}>
       <Editable
         renderElement={renderElement}
         renderLeaf={renderLeaf}
-        onKeyDown={handleOnKeyDown}
+        onKeyDown={handleOnKeyDown(editor)}
       />
     </Slate>
   );

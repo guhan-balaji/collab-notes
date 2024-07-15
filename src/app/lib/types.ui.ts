@@ -1,3 +1,8 @@
+import { BaseEditor } from "slate";
+import { ReactEditor } from "slate-react";
+
+export type EditorType = BaseEditor & ReactEditor;
+
 export type FormatedText = {
   text: string;
   bold?: true;
