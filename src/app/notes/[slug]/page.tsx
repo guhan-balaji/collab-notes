@@ -1,4 +1,6 @@
-import Note from "@/app/ui/notes/Note";
+import dynamic from "next/dynamic";
+
+const Note = dynamic(() => import("@/app/ui/notes/Note"), { ssr: false });
 
 export default function Page({ params }: { params: { slug: string } }) {
   return (
